@@ -31,6 +31,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
 
+
     public Post 게시글상세보기(Integer id) {
         Optional<Post> postOp = postRepository.findById(id);
 

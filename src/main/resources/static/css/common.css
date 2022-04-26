@@ -1,9 +1,11 @@
 .my_atag_none {
     text-decoration-line: none;
-    color:black;
+    color: black;
 }
+
 .my_atag_none:hover {
     text-decoration-line: none;
+    color: black;
 }
 
 .my_fakeimg {
@@ -29,7 +31,7 @@
 }
 
 .my_dropdown_menu {
-    position: absolute !important; 
+    position: absolute !important;
 }
 
 .my_navbar_title {
@@ -60,7 +62,7 @@
     cursor: pointer;
 }
 
-.my_icon_rounded_btn{
+.my_icon_rounded_btn {
     width: 50px;
     height: 50px;
     border-radius: 25px;
@@ -119,7 +121,22 @@
     text-overflow: ellipsis;
 }
 
-@media (max-width : 420px) { 
+.my_text_two_line {
+    display: -webkit-box;
+    /* 해당 영역을 box형태로 관리 */
+    -webkit-line-clamp: 2;
+    /* 표현할 줄 개수 */
+    -webkit-box-orient: vertical;
+    /* box내부를 수직정렬 */
+    line-height: 20px;
+    /* 글자가 짤리는걸 방지 */
+    overflow: hidden;
+    /* 글이 박스 밖으로 안튀어나가게 함 */
+    text-overflow: ellipsis;
+    /* ... 적용 */
+}
+
+@media (max-width: 420px) {
     .my_post_list_item {
         display: block !important;
     }
@@ -138,4 +155,3 @@
         font-weight: 600 !important;
     }
 }
-
