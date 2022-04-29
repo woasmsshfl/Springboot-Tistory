@@ -20,6 +20,7 @@ import site.metacoding.blogv3.domain.user.User;
 import site.metacoding.blogv3.domain.user.UserRepository;
 import site.metacoding.blogv3.domain.visit.Visit;
 import site.metacoding.blogv3.domain.visit.VisitRepository;
+import site.metacoding.blogv3.handler.ex.CustomApiException;
 import site.metacoding.blogv3.handler.ex.CustomException;
 import site.metacoding.blogv3.util.UtilFileUpload;
 import site.metacoding.blogv3.web.dto.post.PostRespDto;
@@ -30,6 +31,8 @@ import site.metacoding.blogv3.web.dto.post.PostWriteReqDto;
 @Service
 public class PostService {
 
+    // private static final Logger LOGGER = LogManager.getLogger(PostService.class);
+
     @Value("${file.path}")
     private String uploadFolder;
 
@@ -39,30 +42,46 @@ public class PostService {
     private final UserRepository userRepository;
 
     @Transactional
+    public void 게시글삭제(Integer id, User principal) {
+
+        Optional<Post> postOp = postRepository.findById(id);
+
+        if (postOp.isPresent()) {
+            Post postEntity = postOp.get();
+
+            // 권한 체크
+            if (principal.getId() == postEntity.getUser().getId()) {
+
+                postRepository.deleteById(id);
+            } else {
+                throw new CustomApiException("삭제 권한이 없습니다");
+            }
+        } else {
+            throw new CustomApiException("해당 게시글이 존재하지 않습니다");
+        }
+
+    }
+
+    @Transactional
     public Post 게시글상세보기(Integer id) {
         Optional<Post> postOp = postRepository.findById(id);
 
         if (postOp.isPresent()) {
-            // visit 추가
             Post postEntity = postOp.get();
 
-            // visitRepository에서 User의 id 찾기
+            // 방문자 카운터 증가
             Optional<Visit> visitOp = visitRepository.findById(postEntity.getUser().getId());
-
-            // 방문자 카운트 증가
             if (visitOp.isPresent()) {
                 Visit visitEntity = visitOp.get();
                 Long totalCount = visitEntity.getTotalCount();
-                visitEntity.setTotalCount(totalCount+1);
+                visitEntity.setTotalCount(totalCount + 1);
             } else {
-                // log.error("미친 심각", "회원가입할 때 visit이 안만들어지는 심각한 오류가 있습니다.");
+                log.error("미친 심각", "회원가입할때 Visit이 안 만들어지는 심각한 오류가 있습니다.");
                 // sms 메시지 전송
                 // email 전송
                 // file 쓰기
-                throw new CustomException("일시적 문제가 발생했습니다. 관리자에게 문의해주세요.");
+                throw new CustomException("일시적 문제가 생겼습니다. 관리자에게 문의해주세요.");
             }
-
-
             return postEntity;
         } else {
             throw new CustomException("해당 게시글을 찾을 수 없습니다");
@@ -112,33 +131,32 @@ public class PostService {
                 pageOwnerId,
                 postsEntity.getNumber() - 1,
                 postsEntity.getNumber() + 1,
-                pageNumbers);
+                pageNumbers,
+                0L);
 
+        // 방문자 카운터 증가
         Optional<User> pageOwnerOp = userRepository.findById(pageOwnerId);
+
         if (pageOwnerOp.isPresent()) {
             User pageOwnerEntity = pageOwnerOp.get();
-
-            // visitRepository에서 User의 id 찾기
             Optional<Visit> visitOp = visitRepository.findById(pageOwnerEntity.getId());
-
-            // 방문자 카운트 증가
             if (visitOp.isPresent()) {
                 Visit visitEntity = visitOp.get();
+                // Dto에 방문자수 담기 (request에서 ip주소 받아서 동일하면 증가 안시키는 로직이 필요함)
+                postRespDto.setTotalCount(visitEntity.getTotalCount());
+
                 Long totalCount = visitEntity.getTotalCount();
                 visitEntity.setTotalCount(totalCount + 1);
             } else {
-                // log.error("미친 심각", "회원가입할 때 visit이 안만들어지는 심각한 오류가 있습니다.");
+                log.error("미친 심각", "회원가입할때 Visit이 안 만들어지는 심각한 오류가 있습니다.");
                 // sms 메시지 전송
                 // email 전송
                 // file 쓰기
-                throw new CustomException("일시적 문제가 발생했습니다. 관리자에게 문의해주세요.");
+                throw new CustomException("일시적 문제가 생겼습니다. 관리자에게 문의해주세요.");
             }
-
         } else {
-            throw new CustomException("존재하지 않는 페이지입니다.");
+            throw new CustomException("해당 블로그는 없는 페이지입니다.");
         }
-
-
 
         return postRespDto;
     }
@@ -157,7 +175,33 @@ public class PostService {
                 pageOwnerId,
                 postsEntity.getNumber() - 1,
                 postsEntity.getNumber() + 1,
-                pageNumbers);
+                pageNumbers,
+                0L);
+
+        // 방문자 카운터 증가
+        Optional<User> pageOwnerOp = userRepository.findById(pageOwnerId);
+
+        if (pageOwnerOp.isPresent()) {
+            User pageOwnerEntity = pageOwnerOp.get();
+            Optional<Visit> visitOp = visitRepository.findById(pageOwnerEntity.getId());
+            if (visitOp.isPresent()) {
+                Visit visitEntity = visitOp.get();
+                // Dto에 방문자수 담기 (request에서 ip주소 받아서 동일하면 증가 안시키는 로직이 필요함)
+                postRespDto.setTotalCount(visitEntity.getTotalCount());
+
+                Long totalCount = visitEntity.getTotalCount();
+                visitEntity.setTotalCount(totalCount + 1);
+            } else {
+                log.error("미친 심각", "회원가입할때 Visit이 안 만들어지는 심각한 오류가 있습니다.");
+                // sms 메시지 전송
+                // email 전송
+                // file 쓰기
+                throw new CustomException("일시적 문제가 생겼습니다. 관리자에게 문의해주세요.");
+            }
+        } else {
+            throw new CustomException("해당 블로그는 없는 페이지입니다.");
+        }
+
         return postRespDto;
     }
 }

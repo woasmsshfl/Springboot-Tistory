@@ -66,6 +66,5 @@ public class Post {
 
     public String getFormatContent() {
         return UtilPost.getContentWithoutImg(content);
-        
     }
 }

@@ -20,8 +20,8 @@ import site.metacoding.blogv3.web.dto.user.PasswordResetReqDto;
 public class UserService {
 
     // DI
-    private final UserRepository userRepository;
     private final VisitRepository visitRepository;
+    private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final EmailUtil emailUtil;
 
@@ -47,14 +47,14 @@ public class UserService {
 
     @Transactional
     public void 회원가입(User user) {
-        // 유저정보 세이브 1번
+        // 1. save 한번
         String rawPassword = user.getPassword(); // 1234
         String encPassword = bCryptPasswordEncoder.encode(rawPassword); // 해쉬 알고리즘
         user.setPassword(encPassword);
 
         User userEntity = userRepository.save(user);
 
-        // 방문자수 디폴트세팅 세이브 2번
+        // 2. save 두번
         Visit visit = new Visit();
         visit.setTotalCount(0L);
         visit.setUser(userEntity); // 터트리고 테스트 해보기
