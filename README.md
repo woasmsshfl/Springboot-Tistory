@@ -1,6 +1,7 @@
 # 스프링부트 JPA 블로그 V3 - GREEN Computer
 
 ### 1. 의존성
+
 - devtools
 - spring web (mvc)
 - mustache
@@ -11,6 +12,7 @@
 - validation
 
 ### 2. DB설정
+
 ```sql
 CREATE USER 'green'@'%' IDENTIFIED BY 'green1234';
 CREATE DATABASE greendb;
@@ -18,12 +20,15 @@ GRANT ALL PRIVILEGES ON greendb.* TO 'green'@'%';
 ```
 
 ### 3. 에디터
+
 - https://quilljs.com/
 
 ### 4. 댓글
+
 - https://livere.com/
 
 ### 5. 주소 요청 이런식으로 해볼까?
+
 ```txt
 localhost:8080/ (메인페이지 - 글 있는 곳 아님)
 localhost:8080/user/{userId}/post
@@ -32,6 +37,7 @@ localhost:8080/user/{userId}/category/{title}
 ```
 
 ### 6. 모델링
+
 ```sql
 Visit
 id
@@ -73,27 +79,34 @@ updateDate
 ```
 
 ### 7. 기능정리
-- 카테고리 등록
-- 글쓰기
-- 글목록보기
-- 페이징
-- 글상세보기
+
+- 카테고리 등록 (완료)
+- 글쓰기 (완료)
+- 글목록보기 (완료)
+- 페이징 (완료)
+- 글상세보기 (완료)
 - 검색
-- 글삭제
+- 글삭제 (완료)
 - 글수정
 - 댓글 (라이브러리 사용)
 
-- 프로필 사진 업로드 (회원가입시)
-- 회원수정
+- 프로필 사진 업로드 (회원가입시) 
+- 회원수정 + 프로필 사진 변경
+- 로그관리 (Log4j)
+- 단위테스트 + API 문서 자동화
+- AWS 배포
+- AOP 처리
 
 
 ### Gradle depenency update
+
 '''txt
 ./gradlew --refresh-dependencie
 '''
 
 
 ### 페이징 참고
+
 ```sql
 -- currentPage, totalPages
 SELECT TRUE last FROM dual;
