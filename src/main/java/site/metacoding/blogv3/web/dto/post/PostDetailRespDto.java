@@ -9,8 +9,6 @@ import site.metacoding.blogv3.domain.post.Post;
 @NoArgsConstructor
 @Data
 public class PostDetailRespDto {
-
     private Post post;
-    private boolean isPageOwner; // is를 붙히면 getter가 변수명 그대로 출력됨.
-    
+    private boolean isPageOwner; // getter가 변수명 그대로 나옴
 }
