@@ -13,6 +13,14 @@
         {{{data.post.content}}}
     </div>
 
+    <div class="my_post_info_box d-flex">
+        <div class="my_post_info">
+            <i class="fa-solid fa-heart my_fake_like my_m_sm_1" id="heart-{{data.post.id}}" onclick="postLikeClick('{{data.post.id}}')"></i> by
+            <b> {{data.post.user.username}}</b>
+            <span class="my_text_body_sm">{{data.post.formatCreateDate}}</span>
+        </div>
+    </div>
+
     {{#data.isPageOwner}}
     <div>
         <a class="btn btn-outline-success" href="#">수정</a>
@@ -25,10 +33,12 @@
         <!-- 라이브리 시티 설치 코드 -->
         <div id="lv-container" data-id="city" data-uid="MTAyMC81MTM0MC8yNzgyMQ==">
             <script type="text/javascript">
-                (function (d, s) {
+                (function(d, s) {
                     var j, e = d.getElementsByTagName(s)[0];
 
-                    if (typeof LivereTower === 'function') { return; }
+                    if (typeof LivereTower === 'function') {
+                        return;
+                    }
 
                     j = d.createElement(s);
                     j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
@@ -42,6 +52,8 @@
         <!-- 시티 설치 코드 끝 -->
     </div>
 </div>
+
+
 
 <script src="/js/post/detail.js"></script>
 
