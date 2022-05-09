@@ -1,5 +1,6 @@
 package site.metacoding.blogv3.web;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +28,7 @@ import site.metacoding.blogv3.web.dto.user.PasswordResetReqDto;
 public class UserController {
 
     private final UserService userService;
+    private final HttpSession session;
 
     @Value("${file.path}")
     private String uploadFolder;
@@ -35,7 +37,9 @@ public class UserController {
     public ResponseEntity<?> profileImgUpdate(
             @AuthenticationPrincipal LoginUser loginUser,
             MultipartFile profileImgFile) {
-        userService.프로파일이미지변경(loginUser.getUser(), profileImgFile);
+
+        // 세션값 변경
+        userService.프로파일이미지변경(loginUser.getUser(), profileImgFile, session);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
