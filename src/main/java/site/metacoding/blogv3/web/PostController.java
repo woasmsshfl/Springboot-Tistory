@@ -32,8 +32,22 @@ public class PostController {
     // CategoryService 사용하지 말고
     // PostService 사용하세요. 이유는 나중에 category, post글 다 같이 가지고 가야 하기 때문임!!
 
+    // /s/api/post/{id}/love
+    @PostMapping("/s/api/post/{id}/love")
+    public ResponseEntity<?> love(@PathVariable Integer id,
+    @AuthenticationPrincipal LoginUser loginUser) {
+        return null;
+    }
+
+    @DeleteMapping("/s/api/post/{id}/love")
+    public ResponseEntity<?> unLove(@PathVariable Integer id,
+    @AuthenticationPrincipal LoginUser loginUser) {
+        return null;
+    }
+
     @DeleteMapping("/s/api/post/{id}")
-    public ResponseEntity<?> postDelete(@PathVariable Integer id, @AuthenticationPrincipal LoginUser loginUser) {
+    public ResponseEntity<?> postDelete(@PathVariable Integer id,
+    @AuthenticationPrincipal LoginUser loginUser) {
 
         User principal = loginUser.getUser();
 
@@ -43,7 +57,8 @@ public class PostController {
     }
 
     @GetMapping("/post/{id}")
-    public String detail(@PathVariable Integer id, Model model, @AuthenticationPrincipal LoginUser loginUser) {
+    public String detail(@PathVariable Integer id, Model model,
+    @AuthenticationPrincipal LoginUser loginUser) {
 
         PostDetailRespDto postDetailRespDto = null;
 
@@ -59,7 +74,8 @@ public class PostController {
     }
 
     @PostMapping("/s/post")
-    public String write(PostWriteReqDto postWriteReqDto, @AuthenticationPrincipal LoginUser loginUser) {
+    public String write(PostWriteReqDto postWriteReqDto,
+    @AuthenticationPrincipal LoginUser loginUser) {
 
         postService.게시글쓰기(postWriteReqDto, loginUser.getUser());
 
