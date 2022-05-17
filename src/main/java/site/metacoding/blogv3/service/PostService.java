@@ -51,12 +51,11 @@ public class PostService {
 
     @Transactional
     public LoveRespDto 좋아요(Integer postId, User principal) {
-        
-        // 숙제 Love를 DTO에 옮겨서 비영속화된 데이터를 응답하기.
+
+        // 숙제 Love를 Dto에 옮겨서 비영속화된 데이터를 응답하기
         Post postEntity = postFindById(postId);
 
-        // ORM
-        Love love = new Love(); // 영속화 되지 않은 Love 오브젝트
+        Love love = new Love();
         love.setUser(principal);
         love.setPost(postEntity);
 
@@ -97,6 +96,7 @@ public class PostService {
 
     }
 
+    // 비로그인 상태일 때 상세보기
     @Transactional
     public PostDetailRespDto 게시글상세보기(Integer id) {
         PostDetailRespDto postDetailRespDto = new PostDetailRespDto();
@@ -113,10 +113,12 @@ public class PostService {
 
         // 좋아요 유무 추가하기 (로그인한 사람이 해당 게시글을 좋아하는지)
         postDetailRespDto.setLove(false);
+        postDetailRespDto.setLoveId(0);
 
         return postDetailRespDto;
     }
 
+    // 로그인 상태일 때 상세보기
     @Transactional
     public PostDetailRespDto 게시글상세보기(Integer id, User principal) {
 
@@ -139,8 +141,11 @@ public class PostService {
         // (1) 로그인한 사람의 userId와 상세보기한 postId로 Love 테이블에서 select해서 row가 있으면 true
         Optional<Love> loveOp = loveRepository.mFindByUserIdAndPostId(principal.getId(), id);
         if (loveOp.isPresent()) {
+            Love loveEntity = loveOp.get();
+            postDetailRespDto.setLoveId(loveEntity.getId());
             postDetailRespDto.setLove(true);
         } else {
+            postDetailRespDto.setLoveId(0);
             postDetailRespDto.setLove(false);
         }
 
@@ -224,17 +229,6 @@ public class PostService {
         return postRespDto;
     }
 
-    // 게시글 한건 찾기
-    private Post postFindById(Integer postId) {
-        Optional<Post> postOp = postRepository.findById(postId);
-        if (postOp.isPresent()) {
-            Post postEntity = postOp.get();
-            return postEntity;
-        } else {
-            throw new CustomApiException("해당 게시글이 존재하지 않습니다");
-        }
-    }
-
     // 좋아요 한건 찾기
     private Love loveFindById(Integer loveId) {
         Optional<Love> loveOp = loveRepository.findById(loveId);
@@ -243,6 +237,17 @@ public class PostService {
             return loveEntity;
         } else {
             throw new CustomApiException("해당 좋아요가 존재하지 않습니다");
+        }
+    }
+
+    // 게시글 한건 찾기
+    private Post postFindById(Integer postId) {
+        Optional<Post> postOp = postRepository.findById(postId);
+        if (postOp.isPresent()) {
+            Post postEntity = postOp.get();
+            return postEntity;
+        } else {
+            throw new CustomApiException("해당 게시글이 존재하지 않습니다");
         }
     }
 
